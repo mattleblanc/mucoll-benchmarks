@@ -15,7 +15,6 @@ parser = argparse.ArgumentParser(description='Convert FLUKA binary file to EDM4H
 parser.add_argument('files_in', metavar='FILE_IN', help='Input binary FLUKA file(s)', nargs='+')
 parser.add_argument('file_out', metavar='FILE_OUT.edm4hep.root', help='Output EDM4HEP file')
 parser.add_argument('-c', '--comment', metavar='TEXT',  help='Comment to be added to the header', type=str)
-parser.add_argument('-b', '--bx_time', metavar='TIME',  help='Time of the bunch crossing [s]', type=float, default=0.0)
 parser.add_argument('-n', '--normalization', metavar='N',  help='Normalization of the generated sample', type=float, default=1.0)
 parser.add_argument('-f', '--files_event', metavar='L',  help='Number of files to merge into a single EDM4HEP event (default: 1)', type=int, default=1)
 parser.add_argument('-s', '--split', help='Write each mother-muon decay as its own EDM4HEP event, instead of merging all of a file\'s muons into one event', action='store_true', default=False)
@@ -126,7 +125,6 @@ else:
 dbg('==================== verbose mode ON ====================')
 dbg( 'Settings for this run:')
 dbg(f'    record size    : {line_dt.itemsize} bytes per particle')
-dbg(f'    bunch crossing : {args.bx_time} s')
 dbg(f'    files / event  : {args.files_event}')
 dbg(f'    split mothers  : {"yes (one event per muon)" if args.split else "no"}')
 dbg(f'    normalization  : {args.normalization} (copies per muon decay)')
@@ -147,7 +145,6 @@ writer = Writer(args.file_out)
 frame = podio.Frame()
 frame.put_parameter("InputFiles", len(args.files_in))
 frame.put_parameter("Normalization", str(args.normalization))
-frame.put_parameter("BXTime", str(args.bx_time))
 frame.put_parameter("FilesPerEvent", str(args.files_event))
 frame.put_parameter("SplitMothers", str(args.split))
 
@@ -217,7 +214,7 @@ for iF, file_in in enumerate(args.files_in):
 			continue
 
 		# Calculating the absolute time of the particle [ns]
-		t = (toff - args.bx_time) * 1e9
+		t = toff * 1e9
 
 		# Skipping if particle's time is greater than allowed
 		if args.t_max is not None and t > args.t_max:
