@@ -49,7 +49,8 @@ MEM = "4G"               # the chain peaks at ~1.7 GB
 USER = os.environ.get("USER", "user")
 SITES = {
     "perlmutter": {
-        "output_base": "/global/cfs/cdirs/m5197/mleblanc/MuonCollider/data/calibhits/v2",
+        # per-user default; use a new directory for every production (or --output-base)
+        "output_base": f"/global/cfs/cdirs/m5197/{USER}/calibhits/v1",
         "image": "ghcr.io/muoncollidersoft/mucoll-sim-ubuntu24:main",   # Shifter image name
         # one physical core = 2 logical CPUs; 4 GB stays within one core's memory
         # share, so the shared QOS charges exactly one core
@@ -57,7 +58,7 @@ SITES = {
         "log_base": os.path.join(os.environ.get("PSCRATCH", "/tmp"), "calibhits_logs"),
     },
     "oscar": {
-        "output_base": f"/oscar/data/mleblan6/mucoll/{USER}/calibhits/v2",
+        "output_base": f"/oscar/data/mleblan6/mucoll/{USER}/calibhits/v1",
         "image": None,   # path to an Apptainer SIF file: pass --image (dated filename recommended)
         "sbatch": ["--nodes=1", "--cpus-per-task=1"],   # add e.g. "--partition=batch" if needed
         "log_base": f"/oscar/scratch/{USER}/calibhits_logs",

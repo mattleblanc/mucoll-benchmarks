@@ -27,6 +27,11 @@ export BENCH=$PWD
 shifterimg pull ghcr.io/muoncollidersoft/mucoll-sim-ubuntu24:main
 ```
 
+On Perlmutter, pulled images are shared by all users. Re-pulling `:main`
+updates it for everyone, and everyone then has to rebuild the plugin (step 3)
+before running by hand. Submitted productions are unaffected because they pin
+the image ID. Check with the group before re-pulling.
+
 The pull takes 10–20 minutes. `main` is a moving tag: after every new pull you
 must rebuild the plugin (step 3). Productions pin the exact image they ran
 with, so a new pull never affects jobs that are already submitted.
@@ -71,9 +76,11 @@ Edit the `EDIT ME` block at the top of
 `simulation/calibhits/production/submit_calib.py`:
 
 - `SAMPLES`, `NJOBS`, `NEVENTS_PER_JOB`, and the momentum/angle ranges;
-- in `SITES["perlmutter"]`: `output_base`, a **new** directory for each
-  production, e.g. `/global/cfs/cdirs/m5197/<you>/calibhits/v1` (or pass
-  `--output-base`), and the account in `sbatch` (m5197).
+- the output directory: by default `/global/cfs/cdirs/m5197/$USER/calibhits/v1`.
+  Every production needs a **new** directory: pass `--output-base …/v2` and so
+  on, or edit `output_base` in `SITES["perlmutter"]`;
+- the account in `SITES["perlmutter"]["sbatch"]` (`m5197`), if you run under a
+  different NERSC project.
 
 Then:
 
