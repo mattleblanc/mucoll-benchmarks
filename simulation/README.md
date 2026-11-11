@@ -5,6 +5,9 @@ This directory contains a steering file and directions for running the simulatio
 ## Contents
 
 - Baseline Simulation steering file
+- `steer_calib.py` + `calibhits/`: baseline plus calorimeter calibration hits
+  (true deposited energy per cell, incl. absorber). Needs a small DDG4 plugin;
+  see [calibhits/README.md](calibhits/README.md).
 
 ## Usage
 
